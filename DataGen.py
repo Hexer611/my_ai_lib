@@ -62,6 +62,46 @@ class DataGeneration:
         self.data = X
         self.exp_out = y
 
+    def mnist_numbers_traindata_from_ubyte(self, imagefile, labelfile):
+        #loaded_data = pandas.read_csv(d_path, sep=',', header=None, dtype='float16').to_numpy()
+
+        print("oouu")
+        X = []
+        y = []
+
+        with open(imagefile, 'rb') as f:
+            print(str(f.read(4)))
+            #print(str(f.read(8)))
+
+            X_no = int.from_bytes(f.read(4))
+            r_nos = int.from_bytes(f.read(4))
+            c_nos = int.from_bytes(f.read(4))
+
+            print(X_no)
+            print(r_nos)
+            print(c_nos)
+            X = np.zeros((X_no, r_nos * c_nos), dtype='float16')
+
+            for _y in range(X_no):
+                for _c in range(c_nos):
+                    for _r in range(r_nos):
+                        X[_y][_r+_c*r_nos] = int.from_bytes(f.read(1), signed=False)
+
+        with open(labelfile, 'rb') as f:
+            print(str(f.read(4)))
+            #print(str(f.read(8)))
+
+            y_no = int.from_bytes(f.read(4))
+            print(y_no)
+            y = np.zeros((y_no,10), dtype='uint8')
+
+            for _ in range(y_no):
+                _true_y = int.from_bytes(f.read(1), signed=False) - 1 # -1 is bc of index
+                y[_, _true_y] = 1
+
+        self.puredata = X.astype('uint8')
+        self.data = X
+        self.exp_out = y
 
 def csv_to_numpybinary(loadfile='Datasets/Mnist-Numbers/mnist_test.csv', savefile='Datasets/Mnist-Numbers/mnist_test.mynp'):
     loaded_csv = pandas.read_csv(loadfile, sep=',', header=None, dtype='float16').to_numpy()

@@ -6,6 +6,8 @@ import numpy as np
 
 
 class Model:
+    trainDisplayFreq = 10
+    
     def __init__(self, LayerS, load_file=''):
         self.LS = LayerS[:,0]
         self.AS = np.hstack((Linear(), LayerS[:, 1]))
@@ -56,11 +58,12 @@ class Model:
                     if _e[np.where(np.max(_p) == _p)].any() == 1.0:
                         true_cases += 1
 
-            if _ % 1000 == 0:
+            if _ % self.trainDisplayFreq == 0:
                 if save_file != '':
                     self.SAVE(save_file)
                     # print('Saved..', end='\r')
-                print('Error : {0} - Accuracy: {1}'.format(tot_error, true_cases/tot_cases), end='\r')
+                #print('Error : {0} - Accuracy: {1}'.format(tot_error, true_cases/tot_cases), end='\r')
+                print('Error : {0} - Accuracy: {1}'.format(tot_error, true_cases/tot_cases))
 
     def print_weights(self):
         for _ in range(self.tot_layers):

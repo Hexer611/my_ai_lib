@@ -51,10 +51,10 @@ class Visualize:
     def minst_numbers_show(self, x, y, p, offset=0, delay=0.00001):
         for rw in range(self.row//2):
             for cl in range(self.column):
-                img = X[rw*self.column+cl+offset].reshape((28,28))
+                img = x[rw*self.column+cl+offset].reshape((28,28))
                 self.fs[rw*2, cl].imshow(img, cmap='Greys')
                 #self.fs[rw*2+1, cl].text(0,0, 'HELU')
-                self.fs[rw*2+1, cl].bar([1,2,3,4,5,6,7,8,9,0], P[rw*self.column+cl+offset])
+                self.fs[rw*2+1, cl].bar([1,2,3,4,5,6,7,8,9,0], p[rw*self.column+cl+offset])
                 plt.sca(self.fs[rw*2+1, cl])
                 plt.xticks(self.xtcks, fontsize=8)
         plt.pause(delay)

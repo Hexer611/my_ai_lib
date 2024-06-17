@@ -16,12 +16,12 @@ from ErrorFunc import MeanSquaredError
 np.random.seed(0)
 
 # PARAMETERS
-dataset = 'cos'
-train = False
+dataset = 'writenumber'
+train = not True
 predict = True
 visualize = True
-load_file = ''
-save_file = './deneme.brain'
+load_file = './denemewrite.brain'
+save_file = './denemewrite.brain'
 
 if dataset == 'sin' or dataset == 'cos':
     my_dataset = DataGeneration(dataset)
@@ -76,3 +76,69 @@ elif dataset == 'numbers':
             my_network.train(my_dataset.data, my_dataset.exp_out, iterations=1, lr=0.000, save_file=save_file, batch_size=512)
             my_network.forward(my_dataset.data)
             my_plot.minst_numbers_show(my_dataset.puredata, my_dataset.exp_out, my_network.output, offset=30000)
+elif dataset == 'newnumbers':
+    my_dataset = DataGeneration()
+    
+    labelfiles = 'Datasets/Mnist-Numbers/t10k-labels.idx1-ubyte'
+    imagefiles = 'Datasets/Mnist-Numbers/t10k-images.idx3-ubyte'
+    
+    my_dataset.mnist_numbers_traindata_from_ubyte(imagefiles, labelfiles)
+    
+    my_network = Model(np.array(((Dense_Layer(784, 32), Relu()),
+                                (Dense_Layer(32, 64), Relu()),
+                                (Dense_Layer(64, 128), Relu()),
+                                (Dense_Layer(128, 128), Sigmoid()),
+                                (Dense_Layer(128, 64), Relu()),
+                                (Dense_Layer(64, 32), Relu()),
+                                (Dense_Layer(32, 10), Soft_Max()))),
+                                load_file)
+
+    if visualize:
+        tcks = [i for i in range(10)]
+        my_plot = Visualize(4, 8, t_layout=1, fgsize=(12,6), xtcks=tcks, ytcks=tcks)
+        my_network.forward(my_dataset.data)
+        my_plot.minst_numbers_show(my_dataset.puredata, my_dataset.exp_out, my_network.output, offset=5000)
+    
+    if train:
+        tcks = [i for i in range(10)]
+        my_plot = Visualize(4, 8, t_layout=1, fgsize=(12,6), xtcks=tcks, ytcks=tcks)
+        for __ in range(1000):
+            my_network.train(my_dataset.data, my_dataset.exp_out, iterations=11, lr=0.001, save_file=save_file, batch_size=512)
+            my_network.forward(my_dataset.data)
+            my_plot.minst_numbers_show(my_dataset.puredata, my_dataset.exp_out, my_network.output, offset=5000)
+elif dataset == 'writenumber':
+    my_dataset = DataGeneration()
+    
+    labelfiles = 'Datasets/Mnist-Numbers/t10k-labels.idx1-ubyte'
+    imagefiles = 'Datasets/Mnist-Numbers/t10k-images.idx3-ubyte'
+    
+    #my_dataset.mnist_numbers_traindata_from_ubyte(imagefiles, labelfiles)
+    
+    my_network = Model(np.array(((Dense_Layer(10, 32), Sigmoid()),
+                                (Dense_Layer(32, 64), Sigmoid()),
+                                (Dense_Layer(64, 128), Sigmoid()),
+                                #(Dense_Layer(128, 128), Sigmoid()),
+                                #(Dense_Layer(128, 256), Sigmoid()),
+                                #(Dense_Layer(256, 512), Sigmoid()),
+                                (Dense_Layer(128, 784), Relu()))),
+                                load_file)
+    my_network.trainDisplayFreq = 1
+
+    if visualize:
+        my_network.forward([0,0,0,0,0,0,1,0,0,0])
+        print(my_network.output.shape)
+        cv.imshow("res", cv.resize(my_network.output.reshape((28,28)), (280, 280)))
+        cv.waitKey(10) 
+    
+    if train:
+        tcks = [i for i in range(10)]
+        my_plot = Visualize(4, 8, t_layout=1, fgsize=(12,6), xtcks=tcks, ytcks=tcks)
+        for __ in range(1000):
+            print(my_dataset.exp_out[0])
+            my_network.train(my_dataset.exp_out, my_dataset.data, iterations=2, lr=0.0000001, save_file=save_file, batch_size=512)
+            #my_network.forward(my_dataset.data)
+            #my_plot.minst_numbers_show(my_dataset.puredata, my_dataset.exp_out, my_network.output, offset=5000)
+            my_network.forward([1,0,0,0,0,0,0,0,0,0])
+            print(my_network.output.shape)
+            cv.imshow("res", cv.resize(my_network.output.reshape((28,28)), (280, 280)))
+            cv.waitKey(10) 
