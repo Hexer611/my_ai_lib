@@ -3,9 +3,10 @@ from numpy import sum as SUM
 
 
 class MeanSquaredError:
+    outSize = 1
     def calc(self, model_out, expected_out):
         self.back = subtract(expected_out, model_out)
-        self.output = SUM(square(self.back))
+        self.output = SUM(square(self.back)) / self.outSize
 
 
 class Binary_Cross_Entropy:

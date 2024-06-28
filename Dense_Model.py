@@ -9,12 +9,13 @@ class Model:
     trainDisplayFreq = 10
     
     def __init__(self, LayerS, load_file=''):
-        self.LS = LayerS[:,0]
-        self.AS = np.hstack((Linear(), LayerS[:, 1]))
+        self.LS = LayerS[:,0]                         # Layers
+        self.AS = np.hstack((Linear(), LayerS[:, 1])) # Activations
 
         self.tot_layers = len(self.LS)
 
         self.ERR = MeanSquaredError()
+        self.ERR.outSize = self.LS[-1].outputSize
         if load_file != '':
             self.LOAD(load_file)
 
