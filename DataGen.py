@@ -62,6 +62,7 @@ class DataGeneration:
         self.data = X
         self.exp_out = y
 
+    # todo: dataset loading is too slow
     def mnist_numbers_traindata_from_ubyte(self, imagefile, labelfile):
         #loaded_data = pandas.read_csv(d_path, sep=',', header=None, dtype='float16').to_numpy()
 
@@ -92,7 +93,6 @@ class DataGeneration:
             #print(str(f.read(8)))
 
             y_no = int.from_bytes(f.read(4))
-            print(y_no)
             y = np.zeros((y_no,10), dtype='uint8')
 
             for _ in range(y_no):
@@ -100,7 +100,7 @@ class DataGeneration:
                 y[_, _true_y] = 1
 
         self.puredata = X.astype('uint8')
-        self.data = X
+        self.data = X / 255.0
         self.exp_out = y
 
 def csv_to_numpybinary(loadfile='Datasets/Mnist-Numbers/mnist_test.csv', savefile='Datasets/Mnist-Numbers/mnist_test.mynp'):
